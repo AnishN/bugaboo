@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Bugaboo</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon"/>
+        <script type="text/javascript">
+            var first_game_id = {{ data.first_game_id }};
+            var first_game_data = {{ data.first_game_data|tojson }};
+            var first_game_moves = {{ data.first_game_moves|tojson }};
+            var second_game_id = {{ data.second_game_id }};
+            var second_game_data = {{ data.second_game_data|tojson }};
+            var second_game_moves = {{ data.second_game_moves|tojson }};
+        </script>
+        <script type="text/javascript" src="/static/js/game.js"></script>
+   </head>
+
+    <body>
+        <h1 id="title">Bugaboo</h1>
+        <h2 id="sub_title">WTF</h2>
+    </body>
+</html>

@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Heroku Flask Template</title>
+        <title>Bugaboo</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        
+        <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon"/>
     </head>
     <body>
-        <h1 id="tittle">Heroku Flask Template</h1>
+        <h1 id="title">Bugaboo</h1>
+        <h2 id="sub_title">A chess.com bughouse game viewing client</h2>
+        <form action="/game" id="game_submitter" method="post">
+            <label for="first_game_label">1st game URL: </label>
+            <input type="text" name="first_game_id"><br><br>
+            <label for="second_game_label">2nd game URL: </label>
+            <input type="text" name="second_game_id"><br><br>
+            <input type="submit" value="Load Game!">
+        </form> 
     </body>
 </html>
