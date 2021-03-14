@@ -1,73 +1,25 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <link rel="stylesheet" href="static/css/chessboard-1.0.0.css">
-        <script src="static/js/jquery-3.4.1.min.js"></script>
-        <script src="static/js/chessboard-1.0.0-modified.js"></script>
+        <title>Heroku Flask Template</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
     </head>
-
     <body>
-        <div id="myBoard" style="width: 400px"></div>
-        <div id="myBoard" style="width: 400px"></div>
-        <button id="headBtn">&lt;&lt;</button>
-        <button id="prevBtn">&lt;</button>
-        <button id="nextBtn">&gt;</button>
-        <button id="tailBtn">&gt;&gt;</button>
-        <br/>
-        <br/>
-        <input type="text" id="fen"></input><button id="inputFen">Enter Fen</button>
-        <script src="static/js/index.js"></script>
+        <h1 id="tittle">Heroku Flask Template</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="https://github.com/vetronus/heroku-flask-template">SOURCE CODE(GitHub)</a></li>
+                <li><a href="http://parthsarthee.com/">PARTH SARTHEE(Author)</a></li>
+                <li><a href="http://aroxbit.com">AROXBIT(Awesome Indie Startup)</a></li>
+            </ul>
+        </nav>
+        <h2>What is Heroku Flask Template</h2>
+        <p>
+            Heroku Flask Template is a simple web app programmed in Python-3 using flask micro-framework. It is created for begginers to understand the basics of creating a flask web app and deploying it on the Heroku. It can also be used as a template to create your new flask web apps which can then easily be deployable on Heroku.
+        </p><br>
+        <h3>You can download this plugin, or modify its source code from <a href="https://github.com/vetronus/heroku-flask-template">GitHub</a></h3>
     </body>
 </html>
-
-<!--
-<!doctype html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>chessboardjs.com &raquo; Homepage</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600|Roboto+Mono">
-    <link rel="stylesheet" href="css/website.css" />
-    <link rel="stylesheet" href="css/chessboard-1.0.0.css" crossorigin="anonymous">
-</head>
-
-<body class="homepage">
-
-
-<script src="js/jquery-3.4.1.min.js"></script>
-<script src="js/prettify.min.js"></script>
-<script src="js/chessboard-1.0.0.js" crossorigin="anonymous"></script>
-<script>
-var fen = 'r4r2/p1pb1kPp/b1p2Ppp/3pP2P/1P3P2/3N1QPp/PPPp1P1P/R4K1R[QRNNrppp] b KQ - 0 1';
-function init (fen) {
-  var board = Chessboard('myBoard', 
-	        { position: fen,
-		  draggable: true,
-		  dropOffBoard: 'trash',
- 	   	  sparePieces: true
-		});
-
-  $('#startBtn').on('click', board.start);
-  $('#clearBtn').on('click', board.clear);
-  $('#tailBtn').on('click', function() { fen = board.tail(); });
-  $('#headBtn').on('click', function() { fen = board.head(); });
-  $('#prevBtn').on('click', function() { fen = board.prev(); console.log(fen);});
-  $('#nextBtn').on('click', function() { fen = board.next(); });
-  $('#inputFen').on('click', function() { 
-    var newFen = $("#fen").val();
-    console.log("new fen = " + newFen);
-    fen = newFen;
-    board.reinit(fen);
-  });
-}
- 
-
-  $(document).ready(init(fen))
-</script>
-</body>
-</html>
--->
-
