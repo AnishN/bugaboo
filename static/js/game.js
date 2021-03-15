@@ -131,4 +131,4 @@ function draw_position(app, fen)
     }
 }
 
-draw_position(app, moves[moves.length - 1].first_board_fen);
+draw_position(app, moves[moves.length - 1].second_board_fen);
