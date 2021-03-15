@@ -5,19 +5,35 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon"/>
-        <script type="text/javascript">
-            var first_game_id = {{ data.first_game_id }};
-            var first_game_data = {{ data.first_game_data|tojson }};
-            var first_game_moves = {{ data.first_game_moves|tojson }};
-            var second_game_id = {{ data.second_game_id }};
-            var second_game_data = {{ data.second_game_data|tojson }};
-            var second_game_moves = {{ data.second_game_moves|tojson }};
-        </script>
-        <script type="text/javascript" src="/static/js/game.js"></script>
+        <!--<link rel="stylesheet" href="static/css/libs/chessboard-1.0.0.css">-->
+        <link rel="stylesheet" href="static/css/game.css">
+        <script src="static/js/libs/jquery-3.4.1.min.js"></script>
+        <!--<script src="static/js/libs/chessboard-1.0.0-modified.js"></script>-->
+        <script src="static/js/libs/pixi.min.js"></script>
+        <script src="static/js/libs/svg.min.js"></script>
    </head>
 
     <body>
-        <h1 id="title">Bugaboo</h1>
-        <h2 id="sub_title">WTF</h2>
+        <div id="ui">
+            <div id="boards">
+                <div id="first_game_board" class="board"></div>
+                <div id="second_game_board" class="board"></div>
+            </div>
+            <!--
+            <div id="controls">
+                <button id="headBtn">&lt;&lt;</button>
+                <button id="prevBtn">&lt;</button>
+                <button id="nextBtn">&gt;</button>
+                <button id="tailBtn">&gt;&gt;</button>
+            </div>
+            -->
+        </div>
+        
+        
+        <script type="text/javascript">
+            var moves = {{ data.moves|tojson }};
+        </script>
+        <script type="text/javascript" src="/static/js/game.js"></script>
     </body>
+
 </html>

@@ -1,4 +1,6 @@
+chess
 Flask
+Flask-cors
 Flask-RESTful
 gunicorn
 itsdangerous
