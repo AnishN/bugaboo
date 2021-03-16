@@ -68,11 +68,20 @@ def merge_processed_moves(first_moves, second_moves):
         all_moves.append(processed_move)
     return all_moves
 
+def handle_user_input(user_input):
+    if type(user_input) == int:
+        return user_input
+    elif type(user_input) == str:
+        after_slash = user_input.split("/")[-1]
+        if after_slash.startswith("live#g="):
+            return int(after_slash.replace("live#g=", ""))
+        else:
+            return int(after_slash)
+
 @app.route("/game", methods=["POST"])
 def load_game():
-    first_game_id = request.form["first_game_id"]
-    if type(first_game_id) == str and "/" in first_game_id:
-        first_game_id = int(first_game_id.split("/")[-1])
+    first_game_raw_id = request.form["first_game_id"]
+    first_game_id = handle_user_input(first_game_raw_id)
     first_game_data = chess_com.fetch_game(first_game_id)
     second_game_id = int(first_game_data["game"]["partnerGameId"])
     second_game_data = chess_com.fetch_game(second_game_id)
