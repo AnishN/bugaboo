@@ -32,14 +32,14 @@ class BughouseBoard(object):
         capture_piece_type = None
         #print(board_num, move.from_square, move.to_square)#, is_castling)
         #print("before", board.fen())
-        print(is_capture, move.drop)
+        #print(is_capture, move.drop)
         first_white_pocket = self.boards[FIRST_BOARD].pockets[chess.WHITE]
         first_black_pocket = self.boards[FIRST_BOARD].pockets[chess.BLACK]
         second_white_pocket = self.boards[SECOND_BOARD].pockets[chess.WHITE]
         second_black_pocket = self.boards[SECOND_BOARD].pockets[chess.BLACK]
         pockets = [first_white_pocket, first_black_pocket, second_white_pocket, second_black_pocket]
         pockets = [str(pocket) for pocket in pockets]
-        print(pockets)
+        #print(pockets)
         if is_capture:
             if move.drop != None:
                 board.pockets[board.turn].remove(move.drop)

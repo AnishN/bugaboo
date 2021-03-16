@@ -14,8 +14,7 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
-def process_game_id(board_num, game_id):
-    game_data = chess_com.fetch_game(game_id)
+def process_game_data(board_num, game_data):
     raw_game_moves = game_data["game"]["moveList"]
     game_moves = tcn_parser.decode_tcn(raw_game_moves)
     raw_game_move_times = game_data["game"]["moveTimestamps"]
@@ -72,9 +71,13 @@ def merge_processed_moves(first_moves, second_moves):
 @app.route("/game", methods=["POST"])
 def load_game():
     first_game_id = request.form["first_game_id"]
-    second_game_id = request.form["second_game_id"]
-    first_moves = process_game_id(0, first_game_id)
-    second_moves = process_game_id(1, second_game_id)
+    if type(first_game_id) == str and "/" in first_game_id:
+        first_game_id = int(first_game_id.split("/")[-1])
+    first_game_data = chess_com.fetch_game(first_game_id)
+    second_game_id = int(first_game_data["game"]["partnerGameId"])
+    second_game_data = chess_com.fetch_game(second_game_id)
+    first_moves = process_game_data(0, first_game_data)
+    second_moves = process_game_data(1, second_game_data)
     moves = merge_processed_moves(first_moves, second_moves)
     data = {
         "moves": moves,
