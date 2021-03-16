@@ -19,7 +19,7 @@ def process_game_data(board_num, game_data):
     game_moves = tcn_parser.decode_tcn(raw_game_moves)
     raw_game_move_times = game_data["game"]["moveTimestamps"]
     game_move_times = [int(move_time) for move_time in raw_game_move_times.split(",")]
-
+    
     prev_lost_time = 0
     total_time = 0
     processed_moves = []
@@ -28,7 +28,7 @@ def process_game_data(board_num, game_data):
         curr_lost_time = 1800 - move_time
         total_time = prev_lost_time + curr_lost_time
         prev_lost_time = curr_lost_time
-        moving_player = i % 2 == 0
+        moving_player = chess.WHITE if i % 2 == 0 else chess.BLACK
         processed_move = (board_num, moving_player, move, move_time, total_time)
         processed_moves.append(processed_move)
     return processed_moves
@@ -38,8 +38,27 @@ def merge_processed_moves(first_moves, second_moves):
     all_raw_moves = first_moves + second_moves
     all_raw_moves.sort(key=op.itemgetter(-1))
     all_moves = []
+    times = [
+        {
+            chess.WHITE: 1800,
+            chess.BLACK: 1800,
+        },
+        {
+            chess.WHITE: 1800,
+            chess.BLACK: 1800,
+        },
+    ]
+    moving_players = [chess.WHITE, chess.WHITE]
     for raw_move in all_raw_moves:
         board_num, moving_player, move, move_time, total_time = raw_move
+        print(raw_move)
+
+        prev_move_time = times[board_num][moving_player]
+        delta_move_time = prev_move_time - move_time
+        other_moving_player = moving_players[not board_num]
+        times[board_num][moving_player] = move_time
+        #times[not board_num][other_moving_player] -= delta_move_time
+
         #print(board_num, moving_player, move)
         move_obj = chess.Move(
             from_square=chess.parse_square(move["from"]) if move["from"] != None else chess.A1,
@@ -60,8 +79,10 @@ def merge_processed_moves(first_moves, second_moves):
             "to": move["to"],
             "drop": move["drop"],
             "promotion": move["promotion"],
-            "move_time": move_time,
-            "total_time": total_time,
+            "first_white_time": times[0][chess.WHITE],
+            "first_black_time": times[0][chess.BLACK],
+            "second_white_time": times[1][chess.WHITE],
+            "second_black_time": times[1][chess.BLACK],
             "first_board_fen": first_board_fen,
             "second_board_fen": second_board_fen,
         }

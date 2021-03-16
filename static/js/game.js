@@ -55,7 +55,7 @@ class ChessBoardPocket
         }
     }
 
-    draw_pocket(piece_pockets)
+    draw_pocket(piece_pockets, player_time)
     {
         var i;
         var piece;
@@ -111,6 +111,32 @@ class ChessBoardPocket
                 this.graphics.addChild(piece_count_text);
             }
         }
+
+        var player_time_text = new PIXI.Text(player_time, text_style);
+        player_time_text.pivot.set(
+            player_time_text.width / 2, 
+            player_time_text.height / 2
+        );
+        player_time_text.x = this.pocket_size / 2 + (6.5 * this.pocket_size);
+        player_time_text.y = this.pocket_size / 2;
+        this.graphics.addChild(player_time_text);
+
+        if(this.piece_color == true)
+        {
+            this.graphics.beginFill(0xFFFFFF);
+        }
+        else
+        {
+            this.graphics.beginFill(0x000000);
+        }
+        this.graphics.drawRoundedRect(
+            (this.board_size * 0.8) - (this.pocket_size * 0.2),
+            this.pocket_size * 0.1,
+            this.board_size * 0.2,
+            this.pocket_size * 0.8,
+            5
+        );
+        this.graphics.endFill();
     }
 }
 
@@ -275,20 +301,20 @@ class ChessBoard
         sprite.height = square_size;
     }
 
-    draw_pockets(piece_pockets)
+    draw_pockets(piece_pockets, top_time, bottom_time)
     {
         this.graphics.addChild(this.top_pocket.graphics);
         this.top_pocket.graphics.x = 0;
-        this.top_pocket.graphics.y = 0;
-        this.top_pocket.draw_pocket(piece_pockets);
+        this.top_pocket.graphics.y = this.pocket_size + this.board_size;
+        this.top_pocket.draw_pocket(piece_pockets, top_time);
 
         this.graphics.addChild(this.bottom_pocket.graphics);
         this.bottom_pocket.graphics.x = 0;
-        this.bottom_pocket.graphics.y = this.pocket_size + this.board_size;
-        this.bottom_pocket.draw_pocket(piece_pockets);
+        this.bottom_pocket.graphics.y = 0;//this.pocket_size + this.board_size;
+        this.bottom_pocket.draw_pocket(piece_pockets, bottom_time);
     }
 
-    draw_position(fen)
+    draw_position(fen, top_time, bottom_time)
     {
         var piece_positions = this.parse_fen_piece_positions(fen);
         var piece_pockets = this.parse_fen_piece_pockets(fen);
@@ -302,7 +328,8 @@ class ChessBoard
             piece_pos = piece_positions[i];
             this.draw_piece(piece_pos[2], piece_pos[0], piece_pos[1]);
         }
-        this.draw_pockets(piece_pockets);
+        
+        this.draw_pockets(piece_pockets, top_time, bottom_time);
     }
 }
 
@@ -329,8 +356,9 @@ function update_nav_buttons()
 
 function redraw_boards()
 {
-    first_board.draw_position(moves[curr_move_index].first_board_fen);
-    second_board.draw_position(moves[curr_move_index].second_board_fen);
+    var curr_move = moves[curr_move_index];
+    first_board.draw_position(curr_move.first_board_fen, curr_move.first_white_time, curr_move.first_black_time);
+    second_board.draw_position(curr_move.second_board_fen, curr_move.second_black_time, curr_move.second_white_time);
 }
 
 document.getElementById("head_button").addEventListener("click", function() {
