@@ -1,17 +1,17 @@
 const text_style = new PIXI.TextStyle({
-    fontFamily: 'Arial',
+    fontFamily: "Fira Sans",
     fontSize: 20,
     fill: "#ffffff",
-    stroke: '#769656',
+    stroke: "#769656",
     strokeThickness: 2,
     dropShadow: true,
-    dropShadowColor: '#000000',
+    dropShadowColor: "#000000",
     dropShadowBlur: 2,
     dropShadowAngle: Math.PI / 4,
     dropShadowDistance: 2,
     wordWrap: true,
     wordWrapWidth: 440,
-    lineJoin: 'round',
+    lineJoin: "round",
     align: "center",
 });
 
@@ -306,6 +306,27 @@ class ChessBoard
     }
 }
 
+function update_nav_buttons()
+{
+    if(curr_move_index == 0)
+    {
+        document.getElementById("head_button").disabled = true;
+    }
+    else
+    {
+        document.getElementById("head_button").disabled = false;
+    }
+
+    if(curr_move_index == moves.length - 1)
+    {
+        document.getElementById("tail_button").disabled = true;
+    }
+    else
+    {
+        document.getElementById("tail_button").disabled = false;
+    }
+}
+
 function redraw_boards()
 {
     first_board.draw_position(moves[curr_move_index].first_board_fen);
@@ -315,6 +336,7 @@ function redraw_boards()
 document.getElementById("head_button").addEventListener("click", function() {
     curr_move_index = 0;
     redraw_boards();
+    update_nav_buttons();
 });
 
 document.getElementById("prev_button").addEventListener("click", function() {
@@ -324,6 +346,7 @@ document.getElementById("prev_button").addEventListener("click", function() {
         curr_move_index = 0;
     }
     redraw_boards();
+    update_nav_buttons();
 });
 
 document.getElementById("next_button").addEventListener("click", function() {
@@ -333,11 +356,13 @@ document.getElementById("next_button").addEventListener("click", function() {
         curr_move_index = moves.length - 1;
     }
     redraw_boards();
+    update_nav_buttons();
 }); 
 
 document.getElementById("tail_button").addEventListener("click", function() {
     curr_move_index = moves.length - 1;
     redraw_boards();
+    update_nav_buttons();
 });
 
 var light_color = 0xEEEED2;
@@ -392,4 +417,5 @@ second_board.graphics.x = board_size + (3 * padding);
 second_board.graphics.y = padding;
 app.stage.addChild(first_board.graphics);
 app.stage.addChild(second_board.graphics);
+update_nav_buttons();
 redraw_boards();

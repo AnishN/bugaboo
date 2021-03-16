@@ -39,7 +39,28 @@ html, body
     color: #769656;
 }
 
-.nav_button:active
+.nav_button[disabled]
+{
+    opacity: 0.1;
+    color: #EEEED2;
+    background-color: #769656;
+}
+
+.nav_button[disabled]:hover
+{
+    opacity: 0.1;
+    color: #EEEED2;
+    background-color: #769656;
+}
+
+.nav_button[disabled]:active
+{
+    opacity: 0.1;
+    color: #EEEED2;
+    background-color: #769656;
+}
+
+.nav_button:enabled:active
 {
     background-color: #EEEED2;
     color: #769656;
