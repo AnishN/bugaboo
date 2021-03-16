@@ -4,6 +4,7 @@ html, body
     width: 100%;
     height: 100%;
     margin: 0px;
+    font-family: "Arial";
 }
 
 #ui
@@ -14,7 +15,35 @@ html, body
     align-items: center;
     width: 100%;
     height: 100%;
-    font-family: "Arial";
+}
+
+.nav_button
+{
+    background-color: #769656;
+    border: none;
+    color: #EEEED2;
+    padding: 5px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 36px;
+    font-weight: bold;
+    border-radius: 5px;
+    box-shadow: 0px 2px 2px #000000;
+    border: 1px solid #111111;
+}
+
+.nav_button:hover
+{
+    background-color: #EEEED2;
+    color: #769656;
+}
+
+.nav_button:active
+{
+    background-color: #EEEED2;
+    color: #769656;
+    transform: translateY(2px);
 }
 
 #controls

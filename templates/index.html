@@ -5,14 +5,18 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon"/>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans">
+        <link rel="stylesheet" href="static/css/index.css">
     </head>
     <body>
-        <h1 id="title">Bugaboo</h1>
-        <h2 id="sub_title">A chess.com bughouse game viewing client</h2>
-        <form action="/game" id="game_submitter" method="post">
-            <label for="first_game_label">Game ID/URL: </label>
-            <input type="text" name="first_game_id"><br><br>
-            <input type="submit" value="Load Game!">
-        </form> 
+        <div id=ui>
+            <h1 id="title">Bugaboo</h1>
+            <i><h2 id="sub_title">A chess.com bughouse game viewing client</h2></i>
+            <form class="form_class" action="/game" id="game_submitter" method="post">
+                <label class="form_label" for="first_game_label">Enter chess.com game ID/URL below: </label>
+                <input class="form_textbox" type="text" name="first_game_id"><br><br>
+                <input class="form_button" type="submit" value="Load Game!">
+            </form> 
+        </div>
     </body>
 </html>
