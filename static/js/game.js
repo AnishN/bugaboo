@@ -15,6 +15,8 @@ const text_style = new PIXI.TextStyle({
     align: "center",
 });
 
+//console.log(FILE_NAMES["G"], RANK_NAMES["4"], SQUARE_NAMES["G6"]);
+
 class ChessBoardPocket
 {
     constructor(board_size, pocket_size, pocket_color, piece_textures, piece_color)
@@ -142,11 +144,12 @@ class ChessBoardPocket
 
 class ChessBoard
 {
-    constructor(board_size, light_color, dark_color, piece_textures, flip, pocket_size, pocket_color)
+    constructor(board_size, light_color, dark_color, move_color, piece_textures, flip, pocket_size, pocket_color)
     {
         this.board_size = board_size;
         this.light_color = light_color;
         this.dark_color = dark_color;
+        this.move_color = move_color;
         this.flip = flip;
         this.pocket_size = pocket_size;
         this.pocket_color = pocket_color;
@@ -228,55 +231,60 @@ class ChessBoard
         return piece_pockets;
     }
 
-    draw_squares()
+    draw_square(file, rank, color)
+    {
+        var square_size = this.board_size / 8;
+        this.graphics.beginFill(color);
+        if(this.flip == false)
+        {
+            this.graphics.drawRect(
+                file * square_size, 
+                rank * square_size + this.pocket_size, 
+                square_size, 
+                square_size
+            );
+            
+        }
+        else
+        {
+            this.graphics.drawRect(
+                file * square_size, 
+                rank * square_size + this.pocket_size, 
+                square_size, 
+                square_size
+            );
+        }
+        this.graphics.endFill();
+    }
+
+    draw_squares(from_square, to_square)
     {
         var i = 0;
         var j = 0;
         var square_size = this.board_size / 8;
+        var from_file = from_square != null ? this.get_square_file(from_square) : -1;
+        var from_rank = from_square != null ? this.get_square_rank(from_square) : -1;
+        var to_file = to_square != null ? this.get_square_file(to_square) : -1;
+        var to_rank = to_square != null ? this.get_square_rank(to_square) : -1;
 
-        if(this.flip == false)
+        for(i = 0; i < 8; i++)
         {
-            for(i = 0; i < 8; i++)
+            for(j = 0; j < 8; j++)
             {
-                for(j = 0; j < 8; j++)
+                if(
+                    (i == from_file && j == from_rank) || 
+                    (i == to_file && j == to_rank)
+                )
                 {
-                    if(i % 2 == j % 2)
-                    {
-                        this.graphics.beginFill(this.light_color);
-                    }
-                    else
-                    {
-                        this.graphics.beginFill(this.dark_color);
-                    }    
-                    this.graphics.drawRect(
-                        i * square_size, 
-                        j * square_size + this.pocket_size, 
-                        square_size, 
-                        square_size
-                    );
+                    this.draw_square(i, j, this.move_color);
                 }
-            }
-        }
-        else
-        {
-            for(i = 0; i < 8; i++)
-            {
-                for(j = 0; j < 8; j++)
+                else if(i % 2 == j % 2)
                 {
-                    if(i % 2 != j % 2)
-                    {
-                        this.graphics.beginFill(this.light_color);
-                    }
-                    else
-                    {
-                        this.graphics.beginFill(this.dark_color);
-                    }    
-                    this.graphics.drawRect(
-                        i * square_size, 
-                        j * square_size + this.pocket_size, 
-                        square_size, 
-                        square_size
-                    );
+                    this.draw_square(i, j, this.light_color);
+                }
+                else
+                {
+                    this.draw_square(i, j, this.dark_color);
                 }
             }
         }
@@ -314,7 +322,31 @@ class ChessBoard
         this.bottom_pocket.draw_pocket(piece_pockets, bottom_time);
     }
 
-    draw_position(fen, top_time, bottom_time)
+    get_square_file(square)
+    {
+        if(square == null)
+        {
+            return -1;
+        }
+        else
+        {
+            return square.charCodeAt(0) - "a".charCodeAt(0);
+        }
+    }
+
+    get_square_rank(square)
+    {
+        if(square == null)
+        {
+            return -1;
+        }
+        else
+        {
+            return parseInt(square[1]) - 1;
+        }
+    }
+
+    draw_position(fen, top_time, bottom_time, from_square, to_square)
     {
         var piece_positions = this.parse_fen_piece_positions(fen);
         var piece_pockets = this.parse_fen_piece_pockets(fen);
@@ -322,7 +354,7 @@ class ChessBoard
         var i;
 
         this.graphics.removeChildren();
-        this.draw_squares();
+        this.draw_squares(from_square, to_square);
         for(i = 0; i < piece_positions.length; i++)
         {
             piece_pos = piece_positions[i];
@@ -338,27 +370,49 @@ function update_nav_buttons()
     if(curr_move_index == 0)
     {
         document.getElementById("head_button").disabled = true;
+        document.getElementById("prev_button").disabled = true;
     }
     else
     {
         document.getElementById("head_button").disabled = false;
+        document.getElementById("prev_button").disabled = false;
     }
 
     if(curr_move_index == moves.length - 1)
     {
         document.getElementById("tail_button").disabled = true;
+        document.getElementById("next_button").disabled = true;
     }
     else
     {
         document.getElementById("tail_button").disabled = false;
+        document.getElementById("next_button").disabled = false;
     }
 }
 
 function redraw_boards()
 {
     var curr_move = moves[curr_move_index];
-    first_board.draw_position(curr_move.first_board_fen, curr_move.first_white_time, curr_move.first_black_time);
-    second_board.draw_position(curr_move.second_board_fen, curr_move.second_black_time, curr_move.second_white_time);
+    var first_from = curr_move.board_num == 0 ? curr_move.from_square : null;
+    var first_to = curr_move.board_num == 0 ? curr_move.to_square : null;
+    var second_from = curr_move.board_num == 1 ? curr_move.from_square : null;
+    var second_to = curr_move.board_num == 1 ? curr_move.to_square : null;
+    console.log(curr_move);
+    console.log(first_from, first_to, second_from, second_to);
+    first_board.draw_position(
+        curr_move.first_board_fen, 
+        curr_move.first_white_time, 
+        curr_move.first_black_time,
+        first_from,
+        first_to,
+    );
+    second_board.draw_position(
+        curr_move.second_board_fen, 
+        curr_move.second_black_time, 
+        curr_move.second_white_time, 
+        second_from,
+        second_to,
+    );
 }
 
 document.getElementById("head_button").addEventListener("click", function() {
@@ -395,6 +449,7 @@ document.getElementById("tail_button").addEventListener("click", function() {
 
 var light_color = 0xEEEED2;
 var dark_color = 0x769656;
+var move_color = 0xBBBB44;
 var num_files = 8;
 var num_ranks = 8;
 var padding = 10;
@@ -437,8 +492,8 @@ for(key in file_paths)
 
 var curr_move_index = moves.length - 1;
 var board_size = (app.screen.width / 2) - (2 * padding);
-var first_board = new ChessBoard(board_size, light_color, dark_color, piece_textures, false, pocket_size, pocket_color);
-var second_board = new ChessBoard(board_size, light_color, dark_color, piece_textures, true, pocket_size, pocket_color);
+var first_board = new ChessBoard(board_size, light_color, dark_color, move_color, piece_textures, false, pocket_size, pocket_color);
+var second_board = new ChessBoard(board_size, light_color, dark_color, move_color, piece_textures, true, pocket_size, pocket_color);
 first_board.graphics.x = padding;
 first_board.graphics.y = padding;
 second_board.graphics.x = board_size + (3 * padding);

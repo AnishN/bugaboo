@@ -7,12 +7,27 @@ import tcn_parser
 
 app = Flask(__name__)
 
-#game 1: 9494798777
-#game 2: 9494798775
-
 @app.route("/")
 def index():
     return render_template("index.html")
+
+def build_game_header(first_game_data, second_game_data):
+    first_pgn_header = first_game_data["game"]["pgnHeaders"]
+    second_pgn_header = second_game_data["game"]["pgnHeaders"]
+    header = {
+        "first_white_name": first_pgn_header["White"],
+        "first_black_name": first_pgn_header["Black"],
+        "second_white_name": second_pgn_header["White"],
+        "second_black_name": second_pgn_header["Black"],
+        "first_white_elo": first_pgn_header["WhiteElo"],
+        "first_black_elo": first_pgn_header["BlackElo"],
+        "second_white_elo": second_pgn_header["WhiteElo"],
+        "second_black_elo": second_pgn_header["BlackElo"],
+        "time_control": first_pgn_header["TimeControl"],
+        "result": first_pgn_header["Result"],
+        "termination": first_pgn_header["Termination"],
+    }
+    return header
 
 def process_game_data(board_num, game_data):
     raw_game_moves = game_data["game"]["moveList"]
@@ -29,7 +44,7 @@ def process_game_data(board_num, game_data):
         total_time = prev_lost_time + curr_lost_time
         prev_lost_time = curr_lost_time
         moving_player = chess.WHITE if i % 2 == 0 else chess.BLACK
-        processed_move = (board_num, moving_player, move, move_time, total_time)
+        processed_move = (board_num, white_name, black_name, white_elo, black_elo, moving_player, move, move_time, total_time)
         processed_moves.append(processed_move)
     return processed_moves
 
@@ -38,6 +53,7 @@ def merge_processed_moves(first_moves, second_moves):
     all_raw_moves = first_moves + second_moves
     all_raw_moves.sort(key=op.itemgetter(-1))
     all_moves = []
+    #this is an assumption, need to really look at time control...
     times = [
         {
             chess.WHITE: 1800,
@@ -50,15 +66,15 @@ def merge_processed_moves(first_moves, second_moves):
     ]
     moving_players = [chess.WHITE, chess.WHITE]
     for raw_move in all_raw_moves:
-        board_num, moving_player, move, move_time, total_time = raw_move
-        print(raw_move)
+        board_num, hite_name, black_name, white_elo, black_elo, moving_player, move, move_time, total_time = raw_move
+        #print(raw_move)
 
         prev_move_time = times[board_num][moving_player]
         delta_move_time = prev_move_time - move_time
         other_moving_player = moving_players[not board_num]
         times[board_num][moving_player] = move_time
         #times[not board_num][other_moving_player] -= delta_move_time
-
+        
         #print(board_num, moving_player, move)
         move_obj = chess.Move(
             from_square=chess.parse_square(move["from"]) if move["from"] != None else chess.A1,
@@ -75,8 +91,8 @@ def merge_processed_moves(first_moves, second_moves):
         processed_move = {
             "board_num": board_num,
             "moving_player": moving_player,
-            "from": move["from"],
-            "to": move["to"],
+            "from_square": move["from"],
+            "to_square": move["to"],
             "drop": move["drop"],
             "promotion": move["promotion"],
             "first_white_time": times[0][chess.WHITE],
